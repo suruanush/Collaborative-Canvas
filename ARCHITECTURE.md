@@ -1,17 +1,71 @@
-1. Introduction
-This is a Real-Time Collaborative Whiteboard. The aim is for several users to draw on the same canvas simultaneously. We employ a Client-Server architecture using Socket.io to maintain consistency among all users with minimal latency.
+This application is a real-time collaborative whiteboard where multiple users can draw simultaneously on a shared canvas.
+It uses a Client–Server–Broadcast architecture built on Node.js and Socket.io to ensure low-latency synchronization and consistent global state across all connected users.
+The system is intentionally designed without any drawing libraries and relies entirely on the raw HTML5 Canvas API.
 
-2. System Components
-There are two components to the system to ensure that the system is understood clearly:
-Frontend (The View): Implemented using the HTML5 Canvas API via canvas.js. It is responsible for rendering pixels, lines, and cursor points.
-Networking (The Controller): Handled by Socket.io. It is the mediator that listens for server broadcasts.
+1. Data Flow Diagram
 
-3. Communication Protocol
-WebSockets enable two-way communication. Data exchange occurs via particular event listeners that ensure the canvas remains in sync:
-- init: Upon connection, this event triggers the transmission of the current drawing history and the list of connected users to populate the client.
-- stroke: This broadcast transmits coordinate information and styles to enable immediate path rendering.
-- cursor: This is a high-rate event that broadcasts the movement of the opposing mouse cursor via x and y coordinates.
-- user-left: This event cleans up by removing the user from the list to conserve memory.
+User A draws on canvas
+↓
+Client captures pointer events
+↓
+Drawing data sent via WebSocket
+↓
+Server stores stroke in history
+↓
+Server broadcasts stroke
+↓
+All clients render stroke in real time
 
-## Architecture Summary
-The system architecture is Client-Server-Broadcast using Socket.io. The architecture distinguishes the Networking Controller (manages events) from the Frontend View (Canvas API). The system employs Hash Maps to manage users and WebSockets for small updates to achieve fast canvas synchronization.
+
+2. WebSocket Protocol
+
+Message Formats
+Stroke
+{
+  "id": "stroke-id",
+  "userId": "user-id",
+  "tool": "brush",
+  "color": "#000000",
+  "width": 4,
+  "points": [{ "x": 10, "y": 20 }, { "x": 15, "y": 25 }]
+}
+
+Cursor
+{ "userId": "user-id", "x": 300, "y": 200 } 
+
+Events
+Event	Direction	Purpose
+init	Server → Client	Send history & users
+stroke	Client → Server	Broadcast drawing
+cursor	Client → Server	Share cursor position
+undo	Client → Server	Global undo
+redo	Client → Server	Global redo
+user-left	Server → Client	Cleanup user
+
+3. Undo / Redo Strategy
+
+Server maintains a global stroke history stack
+Undo removes the last stroke from history
+Redo restores the removed stroke
+Canvas is cleared and history is replayed
+Any user can undo any other user’s drawing
+
+4. Performance Decisions
+
+Drawing uses path segments, not pixels
+Local drawing happens immediately 
+Canvas is only fully redrawn during undo/redo
+
+5. Conflict Handling
+
+No canvas locking is used
+Each stroke is treated as an atomic action
+Server orders strokes by arrival time
+Overlapping drawings are rendered naturally
+
+Architecture Summary
+
+Pattern: Client–Server–Broadcast
+Rendering: Client-side Canvas API
+State: Server-managed global history
+Sync: WebSockets (Socket.io)
