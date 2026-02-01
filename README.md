@@ -20,26 +20,26 @@ A real-time collaborative whiteboard where multiple users can draw simultaneousl
 - Canvas: Raw HTML5 Canvas API (no libraries) Socket.io (WebSockets)
 
 ## ⚙️ Setup Instructions
-Installation & Running the Project
-Prerequisites
-Node.js v18+ installed
-npm installed## commands
-node -v
-npm -v
+- Installation & Running the Project
+- Prerequisites
+- Node.js v18+ installed
+- npm installed## commands
+- node -v
+- npm -v
 
-# 1. Clone the repository
-git clone <your-repo-url>
+ 1. Clone the repository
+- git clone <your-repo-url>
 
-# 2. Navigate into the project folder
-cd collaborative-canvas
+ 2. Navigate into the project folder
+- cd collaborative-canvas
 
-# 3. Install dependencies
-npm install
-npm install express
-npm install socket.io
+ 3. Install dependencies
+- npm install
+- npm install express
+- npm install socket.io
 
-# 4. Start the server
-npm start
+ 4. Start the server
+- npm start
 
 
 👥 Testing with Multiple Users
