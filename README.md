@@ -56,6 +56,14 @@ Visit http://localhost:3000 in each window
 - Undo/redo changes instantly
 This confirms real-time synchronization and global history management.
 
+⚠️ Known Issues / Limitations
+- Canvas history is stored in memory (resets when server restarts)
+- No authentication (users are anonymous)
+- Mobile touch support is basic (desktop-first)
+- Single-room implementation (no multiple rooms yet)
+
+
+
 ⏱ Time Spent on the Project
 
 Total Time: 15–20 hours
